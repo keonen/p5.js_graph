@@ -21,6 +21,25 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_min = $_POST['ymin'];
     $y_max = $_POST['ymax'];
 
+
+    // Calculate exact range values
+    $test_xmin = new EvalMath;
+    $test_xmin->evaluate('y(x) = ' . $x_min);
+    $x_min = $test_xmin->e("y($x_min)");
+
+    $test_xmax = new EvalMath;
+    $test_xmax->evaluate('y(x) = ' . $x_max);
+    $x_max = $test_xmax->e("y($x_max)");
+
+    $test_ymin = new EvalMath;
+    $test_ymin->evaluate('y(x) = ' . $y_min);
+    $y_min = $test_ymin->e("y($y_min)");
+
+    $test_ymax = new EvalMath;
+    $test_ymax->evaluate('y(x) = ' . $y_max);
+    $y_max = $test_ymax->e("y($y_max)");   
+
+
     $x_total = abs($x_min) + abs($x_max);
     $y_total = abs($y_min) + abs($y_max);
 
@@ -28,7 +47,7 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_offset = abs($y_max)/$y_total*700;
 
     // Reset some values
-    $x_point = -350;
+    $x_point = $x_min;
     $x_scale = $x_total/700;
     $y_scale = $y_total/700;
 
@@ -46,11 +65,11 @@ if (isset($_POST['function']) and $_POST['function']) {
     if ($m->evaluate('y(x) = ' . $_POST['function'])) {
         //print "\t<table border=\"1\">\n";
         //print "\t\t<tr><th>x</th><th>y(x)</th>\n";
-        for ($x = $x_min; $x < $x_max; $x+=(($x_max - $x_min)/700)) {
+        for ($x = $x_min; $x < $x_max; $x+=$x_total/700) {
             $x_point++;
             $y_value = - $m->e("y($x)");
             if (is_finite($y_value)) {
-             print "point(".$x_point.", " .$y_value. ");\n";}
+             print "point(".$x/$x_scale.", " .$y_value/$y_scale. ");\n";}
         }
         //print "\t</table>\n";
     } else {
@@ -70,13 +89,62 @@ function drawGrid() {
         y_fact = <?php echo $y_scale; ?>;
 	for (var x=-width; x < width; x+=50) {
 		line(x, -height, x, height);
-		text(Math.round(x_fact * x), x+1, 12);
+		text(Math.round10(x_fact * x,-1), x+1, 12);
 	}
 	for (var y=-height; y < height; y+=50) {
 		line(-width, y, width, y);
-		text(-Math.round(y_fact * y), 1, y+12);
+		text(-Math.round10(y_fact * y,-1), 1, y+12);
 	}
 }
+
+// Closure
+(function() {
+  /**
+   * Decimal adjustment of a number.
+   *
+   * @param {String}  type  The type of adjustment.
+   * @param {Number}  value The number.
+   * @param {Integer} exp   The exponent (the 10 logarithm of the adjustment base).
+   * @returns {Number} The adjusted value.
+   */
+  function decimalAdjust(type, value, exp) {
+    // If the exp is undefined or zero...
+    if (typeof exp === 'undefined' || +exp === 0) {
+      return Math[type](value);
+    }
+    value = +value;
+    exp = +exp;
+    // If the value is not a number or the exp is not an integer...
+    if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+      return NaN;
+    }
+    // Shift
+    value = value.toString().split('e');
+    value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+    // Shift back
+    value = value.toString().split('e');
+    return +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+  }
+
+  // Decimal round
+  if (!Math.round10) {
+    Math.round10 = function(value, exp) {
+      return decimalAdjust('round', value, exp);
+    };
+  }
+  // Decimal floor
+  if (!Math.floor10) {
+    Math.floor10 = function(value, exp) {
+      return decimalAdjust('floor', value, exp);
+    };
+  }
+  // Decimal ceil
+  if (!Math.ceil10) {
+    Math.ceil10 = function(value, exp) {
+      return decimalAdjust('ceil', value, exp);
+    };
+  }
+})();
 
 </script>
 
