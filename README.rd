@@ -4,7 +4,7 @@ This is a example how to plot EvalMath function data
 
 Using p5.js and PHP-scripts it is possible to plot y(x) function graph data in web browser.
 
-User can plot y(x) data using following buit-in functions and constants: sin, sinh, arcsin, asin, arcsinh, asinh, cos, cosh, arccos, acos, arccosh, acosh, tan, tanh, arctan, atan, arctanh, atanh, sqrt, abs, ln, log, pi, e
+User can plot y(x) data using following built-in functions and constants: sin, sinh, arcsin, asin, arcsinh, asinh, cos, cosh, arccos, acos, arccosh, acosh, tan, tanh, arctan, atan, arctanh, atanh, sqrt, abs, ln, log, pi, e
 
 
 ==========================================================================
