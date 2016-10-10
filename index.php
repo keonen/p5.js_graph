@@ -8,7 +8,7 @@ function setup() {
   // Sets the screen to be 700 pixels wide and 700 pixels high
   createCanvas(700, 700);
   fill(0);
-  background(240);
+  background(245);
   noSmooth();
 
 <?php
@@ -94,16 +94,16 @@ function drawValues() {
 
         stroke(200);
         fill(5);
-
+        textSize(9);
         x_fact = <?php echo $x_scale; ?>;
         y_fact = <?php echo $y_scale; ?>;
 
         for (var x=-width*10; x < width*10; x+=50) {
                 //text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 25);
-                text(Math.round10(x_fact * x,-2), x+1+<?php echo $x_offset; ?>, 695);
+                text(Math.round10(x_fact * x,-2), x+1+<?php echo $x_offset; ?>, 698);
         }
         for (var y=-height*10; y < height*10; y+=50) {
-                text(-Math.round10(y_fact * y,-2), 1, y+12+<?php echo $y_offset; ?>);
+                text(-Math.round10(y_fact * y,-2), 1, y+9+<?php echo $y_offset; ?>);
                 //text(-Math.round10(y_fact * y,-1), 665, y+12+<?php echo $y_offset; ?>);
         }
 
