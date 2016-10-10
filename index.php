@@ -23,10 +23,7 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_min = $_POST['ymin'];
     $y_max = $_POST['ymax'];
 
-    // Check for valid range
-    if ($x_max < 0) {$error_string .= "Warning: xmax should be bigger than 0!<br />"; }
-    if ($y_max < 0) {$error_string .= "Warning: ymax should be bigger than 0!<br />"; }
-
+    // Check valid range values
     if ($x_min >= $x_max) {$error_string .= "Warning: xmin should be less than xmax!<br />"; }
     if ($y_min >= $y_max) {$error_string .= "Warning: ymin should be less than ymax!<br />"; }
 
@@ -52,7 +49,7 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_total = $y_max - $y_min;
 
     $x_offset = -$x_min/$x_total*700;
-    $y_offset = abs($y_max)/$y_total*700;
+    $y_offset = $y_max/$y_total*700;
 
     // Reset some values
     $x_point = $x_min;
@@ -101,14 +98,13 @@ function drawValues() {
         x_fact = <?php echo $x_scale; ?>;
         y_fact = <?php echo $y_scale; ?>;
 
-
-        for (var x=-width; x < width; x+=50) {
-                text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 12);
+        for (var x=-width*10; x < width*10; x+=50) {
+                //text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 25);
                 text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 695);
         }
-        for (var y=-height; y < height; y+=50) {
+        for (var y=-height*10; y < height*10; y+=50) {
                 text(-Math.round10(y_fact * y,-1), 1, y+12+<?php echo $y_offset; ?>);
-                text(-Math.round10(y_fact * y,-1), 665, y+12+<?php echo $y_offset; ?>);
+                //text(-Math.round10(y_fact * y,-1), 665, y+12+<?php echo $y_offset; ?>);
         }
 
 }
