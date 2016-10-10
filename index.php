@@ -5,13 +5,15 @@
 <script type="text/javascript">
 function setup() {
 
-  // Sets the screen to be 720 pixels wide and 400 pixels high
+  // Sets the screen to be 700 pixels wide and 700 pixels high
   createCanvas(700, 700);
   fill(0);
-  background(250);
+  background(240);
   noSmooth();
 
 <?php
+
+$error_string = "";
 
 if (isset($_POST['function']) and $_POST['function']) {
     include('evalmath.class.php');
@@ -21,6 +23,14 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_min = $_POST['ymin'];
     $y_max = $_POST['ymax'];
 
+    // Check for valid range
+    if ($x_min > 0) {$error_string .= "Warning: xmin should be less than 0!<br />"; }
+    if ($y_min > 0) {$error_string .= "Warning: ymin should be less than 0!<br />"; }
+    if ($x_max < 0) {$error_string .= "Warning: xmax should be bigger than 0!<br />"; }
+    if ($y_max < 0) {$error_string .= "Warning: ymax should be bigger than 0!<br />"; }
+
+    if ($x_min >= $x_max) {$error_string .= "Warning: xmin should be less than xmax!<br />"; }
+    if ($y_min >= $y_max) {$error_string .= "Warning: ymin should be less than ymax!<br />"; }
 
     // Calculate exact range values
     $test_xmin = new EvalMath;
@@ -40,8 +50,8 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_max = $test_ymax->e("y($y_max)");   
 
 
-    $x_total = abs($x_min) + abs($x_max);
-    $y_total = abs($y_min) + abs($y_max);
+    $x_total = $x_max - $x_min;
+    $y_total = $y_max - $y_min;
 
     $x_offset = abs($x_min)/$x_total*700;
     $y_offset = abs($y_max)/$y_total*700;
@@ -52,13 +62,13 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_scale = $y_total/700;
 
     // Move origo
-    echo "translate(".$x_offset.", ".$y_offset.");\n";
+    echo "  translate(".$x_offset.", ".$y_offset.");\n";
 
     // Draw grid
-    echo "drawGrid();\n";
+    echo "  drawGrid();\n";
 
     // Draw black points
-    echo "stroke(0);\n";
+    echo "  stroke(0);\n";
 
     $m = new EvalMath;
     $m->suppress_errors = true;
@@ -69,7 +79,7 @@ if (isset($_POST['function']) and $_POST['function']) {
             $x_point++;
             $y_value = - $m->e("y($x)");
             if (is_finite($y_value)) {
-             print "point(".$x/$x_scale.", " .$y_value/$y_scale. ");\n";}
+             print "  point(".$x/$x_scale.", " .$y_value/$y_scale. ");\n";}
         }
         //print "\t</table>\n";
     } else {
@@ -157,6 +167,7 @@ function drawGrid() {
         xmax = <input type="text" name="xmax" value="<?=(isset($_POST['xmax']) ? htmlspecialchars($_POST['xmax']) : '350')?>" size="5">
         ymin = <input type="text" name="ymin" value="<?=(isset($_POST['ymin']) ? htmlspecialchars($_POST['ymin']) : '-350')?>" size="5">
         ymax = <input type="text" name="ymax" value="<?=(isset($_POST['ymax']) ? htmlspecialchars($_POST['ymax']) : '350')?>" size="5"><br />
+        <?php echo $error_string; ?>
         y(x) = <input type="text" name="function" value="<?=(isset($_POST['function']) ? htmlspecialchars($_POST['function']) : '')?>" size="50">
         <input type="submit" value="Plot">
     </form>
