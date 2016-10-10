@@ -100,10 +100,10 @@ function drawValues() {
 
         for (var x=-width*10; x < width*10; x+=50) {
                 //text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 25);
-                text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 695);
+                text(Math.round10(x_fact * x,-2), x+1+<?php echo $x_offset; ?>, 695);
         }
         for (var y=-height*10; y < height*10; y+=50) {
-                text(-Math.round10(y_fact * y,-1), 1, y+12+<?php echo $y_offset; ?>);
+                text(-Math.round10(y_fact * y,-2), 1, y+12+<?php echo $y_offset; ?>);
                 //text(-Math.round10(y_fact * y,-1), 665, y+12+<?php echo $y_offset; ?>);
         }
 
