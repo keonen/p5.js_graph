@@ -24,8 +24,6 @@ if (isset($_POST['function']) and $_POST['function']) {
     $y_max = $_POST['ymax'];
 
     // Check for valid range
-    if ($x_min > 0) {$error_string .= "Warning: xmin should be less than 0!<br />"; }
-    if ($y_min > 0) {$error_string .= "Warning: ymin should be less than 0!<br />"; }
     if ($x_max < 0) {$error_string .= "Warning: xmax should be bigger than 0!<br />"; }
     if ($y_max < 0) {$error_string .= "Warning: ymax should be bigger than 0!<br />"; }
 
@@ -53,7 +51,7 @@ if (isset($_POST['function']) and $_POST['function']) {
     $x_total = $x_max - $x_min;
     $y_total = $y_max - $y_min;
 
-    $x_offset = abs($x_min)/$x_total*700;
+    $x_offset = -$x_min/$x_total*700;
     $y_offset = abs($y_max)/$y_total*700;
 
     // Reset some values
@@ -87,7 +85,31 @@ if (isset($_POST['function']) and $_POST['function']) {
     }
 }
 
+// Move origo
+    echo "  translate(".-$x_offset.", ".-$y_offset.");\n";
+
 ?>
+
+    drawValues();
+}
+
+function drawValues() {
+
+        stroke(200);
+        fill(5);
+
+        x_fact = <?php echo $x_scale; ?>;
+        y_fact = <?php echo $y_scale; ?>;
+
+
+        for (var x=-width; x < width; x+=50) {
+                text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 12);
+                text(Math.round10(x_fact * x,-1), x+1+<?php echo $x_offset; ?>, 695);
+        }
+        for (var y=-height; y < height; y+=50) {
+                text(-Math.round10(y_fact * y,-1), 1, y+12+<?php echo $y_offset; ?>);
+                text(-Math.round10(y_fact * y,-1), 665, y+12+<?php echo $y_offset; ?>);
+        }
 
 }
 
@@ -97,13 +119,16 @@ function drawGrid() {
 	fill(5);
         x_fact = <?php echo $x_scale; ?>;
         y_fact = <?php echo $y_scale; ?>;
-	for (var x=-width; x < width; x+=50) {
-		line(x, -height, x, height);
-		text(Math.round10(x_fact * x,-1), x+1, 12);
+
+	for (var x=-width*2; x < width*2; x+=50) {
+                if (x == 0) {stroke(100);} else {stroke(200);}
+		line(x, -height*2, x, height*2);
+//		text(Math.round10(x_fact * x,-1), x+1, 12);
 	}
-	for (var y=-height; y < height; y+=50) {
-		line(-width, y, width, y);
-		text(-Math.round10(y_fact * y,-1), 1, y+12);
+	for (var y=-height*2; y < height*2; y+=50) {
+                if (y == 0) {stroke(100);} else {stroke(200);}
+		line(-width*2, y, width*2, y);
+//		text(-Math.round10(y_fact * y,-1), 1, y+12);
 	}
 }
 
